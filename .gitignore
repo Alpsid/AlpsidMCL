@@ -1,0 +1,13 @@
+## Visual Studio & .NET geçici dosyaları
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.suo
+publish_launcher/
+publish_installer/
+Kurulum/Resources/
+Kurulum.exe
+inspect/

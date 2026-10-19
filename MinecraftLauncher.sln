@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftLauncher", "MinecraftLauncher.csproj", "{3EAB8C18-9F83-49F1-A87A-3F988A7CEB73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kurulum", "Kurulum\Kurulum.csproj", "{B8D48E19-21F5-4AA8-AC01-44B7E0CE10F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EAB8C18-9F83-49F1-A87A-3F988A7CEB73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EAB8C18-9F83-49F1-A87A-3F988A7CEB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EAB8C18-9F83-49F1-A87A-3F988A7CEB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EAB8C18-9F83-49F1-A87A-3F988A7CEB73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D48E19-21F5-4AA8-AC01-44B7E0CE10F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D48E19-21F5-4AA8-AC01-44B7E0CE10F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D48E19-21F5-4AA8-AC01-44B7E0CE10F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D48E19-21F5-4AA8-AC01-44B7E0CE10F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
