@@ -1,4 +1,3 @@
-# AlpsidMCL
 # 🚀 AlpsidMCL - Minecraft Launcher
 
 Modern, hafif ve orijinal Minecraft kurulumlarına zarar vermeyen, bağımsız özel bir Minecraft Launcher'ı.
