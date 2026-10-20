@@ -34,10 +34,11 @@ namespace Minecraft_launcher
 
             // Bind Form Load and button click events
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += (s, e) => SaveConfig();
             this.btnOyna.Click += new System.EventHandler(this.btnOyna_Click);
         }
 
-        private const string LAUNCHER_VERSION = "1.0.0";
+        private const string LAUNCHER_VERSION = "1.0.3";
 
         private async void Form1_Load(object? sender, EventArgs e)
         {
@@ -50,8 +51,9 @@ namespace Minecraft_launcher
             cmbRam.Items.Add("8 GB");
             cmbRam.SelectedIndex = 1; // Default to 2 GB
 
-            // Arka planda güncelleme kontrolünü başlat (kullanıcıyı engellemez)
+            // Arka planda güncelleme kontrolünü ve haberleri başlat
             _ = CheckForUpdatesAsync();
+            _ = LoadNewsAsync();
 
             try
             {
@@ -62,10 +64,14 @@ namespace Minecraft_launcher
                 var versions = await _launcher.GetAllVersionsAsync();
                 
                 cmbSurumler.Items.Clear();
+                string? latestRelease = null;
                 foreach (var version in versions)
                 {
                     if (version.Type == "release")
                     {
+                        if (latestRelease == null)
+                            latestRelease = version.Name;
+
                         cmbSurumler.Items.Add(version.Name);
                     }
                 }
@@ -74,19 +80,133 @@ namespace Minecraft_launcher
                 {
                     cmbSurumler.SelectedIndex = 0;
                     lblDurum.Text = "Sürümler yüklendi. Oyuna başlamak için Oyna butonuna basın.";
+                    lblMcNewsWarning.Visible = false;
+                    if (!string.IsNullOrEmpty(latestRelease))
+                    {
+                        lblMcNewsTitle.Text = $"⚔️ MINECRAFT {latestRelease} YENİLİKLERİ";
+                    }
                 }
                 else
                 {
                     lblDurum.Text = "Hata: Kararlı (Release) sürüm bulunamadı.";
+                    lblMcNewsWarning.Visible = true;
                 }
                 progressBar1.Value = 100;
+
+                // Kaydedilmiş ayarları yükle
+                LoadConfig();
             }
             catch (Exception ex)
             {
                 lblDurum.Text = "Hata: Sürüm listesi alınamadı.";
-                MessageBox.Show("Minecraft sürümleri yüklenirken hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblMcNewsWarning.Visible = true;
+                lblMcNewsWarning.Text = "⚠️ Veri Alınamadı, İnternet Bağlantısı Yok";
                 progressBar1.Value = 0;
             }
+        }
+
+        private async Task LoadNewsAsync()
+        {
+            // 1. AlpsidMCL Duyuruları - GitHub Releases'den dinamik çek
+            try
+            {
+                using var http = new HttpClient();
+                http.DefaultRequestHeaders.Add("User-Agent", "AlpsidMCL-News/1.0");
+                http.Timeout = TimeSpan.FromSeconds(6);
+
+                string apiUrl = "https://api.github.com/repos/Alpsid/AlpsidMCL/releases/latest";
+                string json = await http.GetStringAsync(apiUrl);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                string tagName = root.TryGetProperty("tag_name", out var t) ? t.GetString() ?? "" : "";
+                string releaseName = root.TryGetProperty("name", out var n) ? n.GetString() ?? "" : "";
+                string body = root.TryGetProperty("body", out var b) ? b.GetString() ?? "" : "";
+
+                if (!string.IsNullOrWhiteSpace(tagName))
+                {
+                    lblLauncherNewsTitle.Text = string.IsNullOrWhiteSpace(releaseName) 
+                        ? $"📢 ALPSIDMCL {tagName}" 
+                        : $"📢 {releaseName}";
+
+                    string cleanBody = string.IsNullOrWhiteSpace(body)
+                        ? "• Otomatik Güncelleme desteği devrede.\r\n• İzole %appdata%\\AlpsidMCL dizini korundu.\r\n• Performans ve kararlılık iyileştirmeleri."
+                        : body.Trim();
+
+                    lblLauncherNewsBody.Text = $"🚀 En Son Sürüm: {tagName}\r\n\r\n{cleanBody}";
+                    lblLauncherNewsWarning.Visible = false;
+                }
+                else
+                {
+                    lblLauncherNewsWarning.Visible = true;
+                }
+            }
+            catch
+            {
+                lblLauncherNewsWarning.Visible = true;
+                lblLauncherNewsWarning.Text = "⚠️ Veri Alınamadı, İnternet Bağlantısı Yok";
+            }
+        }
+
+        private string GetConfigFilePath()
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "AlpsidMCL",
+                "launcher_config.json");
+        }
+
+        private void LoadConfig()
+        {
+            try
+            {
+                string configPath = GetConfigFilePath();
+                if (!File.Exists(configPath)) return;
+
+                string json = File.ReadAllText(configPath);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("Username", out var u) && !string.IsNullOrWhiteSpace(u.GetString()))
+                {
+                    txtKullaniciAdi.Text = u.GetString();
+                }
+
+                if (root.TryGetProperty("SelectedRam", out var r) && !string.IsNullOrWhiteSpace(r.GetString()))
+                {
+                    int index = cmbRam.Items.IndexOf(r.GetString());
+                    if (index >= 0) cmbRam.SelectedIndex = index;
+                }
+
+                if (root.TryGetProperty("SelectedVersion", out var v) && !string.IsNullOrWhiteSpace(v.GetString()))
+                {
+                    int index = cmbSurumler.Items.IndexOf(v.GetString());
+                    if (index >= 0) cmbSurumler.SelectedIndex = index;
+                }
+            }
+            catch { }
+        }
+
+        private void SaveConfig()
+        {
+            try
+            {
+                string configPath = GetConfigFilePath();
+                string? user = txtKullaniciAdi.Text.Trim();
+                string? ram = cmbRam.SelectedItem?.ToString();
+                string? ver = cmbSurumler.SelectedItem?.ToString();
+
+                var configObj = new
+                {
+                    Username = user,
+                    SelectedRam = ram,
+                    SelectedVersion = ver
+                };
+
+                string json = System.Text.Json.JsonSerializer.Serialize(configObj, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(configPath, json);
+            }
+            catch { }
         }
 
         private async Task CheckForUpdatesAsync()
@@ -115,10 +235,13 @@ namespace Minecraft_launcher
                         lblDurum.Text = $"Güncelleme indiriliyor: %{pct}";
                     });
 
-                    string currentExePath = Environment.ProcessPath ?? 
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AlpsidMCL", "MinecraftLauncher.exe");
+                    // Güncellenecek hedef her zaman AppData altındaki asıl launcher dosyasıdır
+                    string targetLauncherPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+                        "AlpsidMCL", 
+                        "MinecraftLauncher.exe");
 
-                    await Updater.DownloadAndApplyUpdateAsync(downloadUrl, currentExePath, progress);
+                    await Updater.DownloadAndApplyUpdateAsync(downloadUrl, targetLauncherPath, progress);
                 }
             }
             catch (Exception ex)
@@ -145,6 +268,9 @@ namespace Minecraft_launcher
 
             string selectedVersion = cmbSurumler.SelectedItem.ToString() ?? "1.20.1";
             
+            // Kullanıcı ayarlarını hemen kaydet
+            SaveConfig();
+
             // Calculate RAM
             int ramMb = 2048;
             if (cmbRam.SelectedItem != null)

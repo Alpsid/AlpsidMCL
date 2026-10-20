@@ -19,4 +19,7 @@ Write-Host "3. Building Setup Installer (Kurulum.exe)..." -ForegroundColor Green
 Write-Host "4. Copying final Kurulum.exe to workspace root..." -ForegroundColor Green
 Copy-Item "./publish_installer/Kurulum.exe" "./Kurulum.exe" -Force
 
-Write-Host "Success! Kurulum.exe is ready at root directory." -ForegroundColor Cyan
+Write-Host "5. Creating Kurulum.zip for release..." -ForegroundColor Green
+Compress-Archive -Path "./Kurulum.exe" -DestinationPath "./Kurulum.zip" -Force
+
+Write-Host "Success! Kurulum.exe and Kurulum.zip are ready at root directory." -ForegroundColor Cyan

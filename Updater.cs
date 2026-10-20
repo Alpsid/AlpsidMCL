@@ -40,31 +40,36 @@ namespace Minecraft_launcher
                 using var doc  = JsonDocument.Parse(json);
                 var root        = doc.RootElement;
 
-                // Tag adı: "v1.2.3" → "1.2.3"
-                string tagName       = root.GetProperty("tag_name").GetString() ?? "";
-                string remoteVersion = tagName.TrimStart('v');
+                // Tag adı: "v1.0.1-fix" -> sadece "1.0.1" kısmını temizle
+                string tagName = root.GetProperty("tag_name").GetString() ?? "";
+                string remoteVersion = CleanVersionString(tagName);
 
                 if (string.IsNullOrWhiteSpace(remoteVersion))
                     return (false, "", "");
 
-                // Release asset'leri içinden .exe dosyasını bul
+                // Release asset'leri içinden özellikle MinecraftLauncher.exe dosyasını bul
                 string downloadUrl = "";
+                long assetSize = 0;
                 if (root.TryGetProperty("assets", out var assets))
                 {
                     foreach (var asset in assets.EnumerateArray())
                     {
                         string? assetName = asset.GetProperty("name").GetString();
-                        if (assetName != null &&
-                            assetName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(assetName, "MinecraftLauncher.exe", StringComparison.OrdinalIgnoreCase))
                         {
-                            downloadUrl = asset.GetProperty("browser_download_url")
-                                              .GetString() ?? "";
+                            downloadUrl = asset.GetProperty("browser_download_url").GetString() ?? "";
+                            if (asset.TryGetProperty("size", out var s))
+                            {
+                                assetSize = s.GetInt64();
+                            }
                             break;
                         }
                     }
                 }
 
-                if (string.IsNullOrEmpty(downloadUrl))
+                // GÜVENLİK KONTROLÜ: MinecraftLauncher.exe ~1-5 MB arasındadır.
+                // Eğer yanlışlıkla Kurulum.exe (60+ MB) eşleşirse asla indirme!
+                if (string.IsNullOrEmpty(downloadUrl) || assetSize > 15 * 1024 * 1024)
                     return (false, "", "");
 
                 bool hasUpdate = IsNewerVersion(remoteVersion, currentVersion);
@@ -77,18 +82,33 @@ namespace Minecraft_launcher
             }
         }
 
-        // ─── Sürüm Karşılaştırma ────────────────────────────────────────────
+        // ─── Sürüm Temizleme ve Karşılaştırma ───────────────────────────────
+
+        private static string CleanVersionString(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return "";
+            // Baştaki 'v' veya 'V' harfini at
+            raw = raw.Trim().TrimStart('v', 'V');
+            // "-fix", "-beta" gibi ekleri temizle (ilk tire işaretine kadar al)
+            int dashIndex = raw.IndexOf('-');
+            if (dashIndex > 0)
+            {
+                raw = raw.Substring(0, dashIndex);
+            }
+            return raw.Trim();
+        }
 
         private static bool IsNewerVersion(string remote, string current)
         {
             try
             {
-                return new Version(remote) > new Version(current);
+                var vRemote = new Version(CleanVersionString(remote));
+                var vCurrent = new Version(CleanVersionString(current));
+                return vRemote > vCurrent;
             }
             catch
             {
-                // Version parse edilemezse string karşılaştırması kullan
-                return string.Compare(remote, current, StringComparison.OrdinalIgnoreCase) > 0;
+                return false;
             }
         }
 
@@ -137,31 +157,28 @@ namespace Minecraft_launcher
             fileStream.Close();
             progress.Report(100);
 
-            // 2. Updater bat script oluştur
-            //    - 3 saniye bekle (mevcut process kapansın)
-            //    - Yeni EXE'yi üzerine kopyala
-            //    - Yeni launcher'ı başlat
-            //    - Geçici dosyaları temizle
-            string batContent =
-                "@echo off\r\n" +
-                "timeout /t 3 /nobreak > nul\r\n" +
-                $"copy /Y \"{tempNewExe}\" \"{currentExePath}\"\r\n" +
-                $"start \"\" \"{currentExePath}\"\r\n" +
-                $"del \"{tempNewExe}\" 2>nul\r\n" +
-                "del \"%~f0\"\r\n";
+            int currentPid = Environment.ProcessId;
 
-            await File.WriteAllTextAsync(batPath, batContent, ct);
+            // 2. PowerShell ile garantili güncelleme uygulayıcı
+            // Mevcut işlem (PID) tamamen kapanana kadar bekler, ardından dosyayı güvenle kopyalar.
+            string psScript = 
+                $"$pidToWait = {currentPid}; " +
+                "while (Get-Process -Id $pidToWait -ErrorAction SilentlyContinue) { Start-Sleep -Milliseconds 200 }; " +
+                "Start-Sleep -Milliseconds 500; " +
+                $"Copy-Item -Path '{tempNewExe}' -Destination '{currentExePath}' -Force; " +
+                $"Remove-Item -Path '{tempNewExe}' -Force -ErrorAction SilentlyContinue; " +
+                $"Start-Process -FilePath '{currentExePath}'";
 
-            // 3. Bat'ı gizli pencerede başlat ve mevcut uygulamayı kapat
             Process.Start(new ProcessStartInfo
             {
-                FileName        = "cmd.exe",
-                Arguments       = $"/c \"{batPath}\"",
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{psScript}\"",
                 UseShellExecute = true,
-                WindowStyle     = ProcessWindowStyle.Hidden
+                WindowStyle = ProcessWindowStyle.Minimized
             });
 
-            System.Windows.Forms.Application.Exit();
+            // Uygulamayı ve tüm thread'leri anında sonlandır
+            Environment.Exit(0);
         }
     }
 }

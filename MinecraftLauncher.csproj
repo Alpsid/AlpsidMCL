@@ -8,6 +8,13 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>MinecraftLauncher</AssemblyName>
+    <ApplicationTitle>Alpsid Mc Launcher</ApplicationTitle>
+    <Company>Alpsid</Company>
+    <Product>Alpsid Mc Launcher</Product>
+    <Description>Alpsid Mc Launcher - Ozel Minecraft Baslatici</Description>
+    <Version>1.0.3</Version>
+    <FileVersion>1.0.3.0</FileVersion>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
