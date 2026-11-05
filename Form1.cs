@@ -313,7 +313,7 @@ namespace Minecraft_launcher
             catch { }
         }
 
-        private const string LAUNCHER_VERSION = "1.0.6";
+        private const string LAUNCHER_VERSION = "1.0.8";
 
         private async void Form1_Load(object? sender, EventArgs e)
         {
@@ -793,21 +793,24 @@ namespace Minecraft_launcher
                     targetVersion = await neoForgeInstaller.Install(selectedVersion, neoForgeOptions);
                 }
 
-                // Step 3: Download & Extract Modpack
-                bool modpackSuccess = await DownloadAndExtractModpackAsync();
-                if (!modpackSuccess)
+                // Step 3: Download & Extract Modpack (yalnızca Forge/NeoForge seçiliyse)
+                if (rdbForge.Checked || rdbNeoForge.Checked)
                 {
-                    var dialogResult = MessageBox.Show(
-                        "Mod paketi indirilemedi/kurulamadı. Oyunu yine de mod paketi olmadan başlatmak istiyor musunuz?",
-                        "Mod Paketi Hatası",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning);
-
-                    if (dialogResult == DialogResult.No)
+                    bool modpackSuccess = await DownloadAndExtractModpackAsync();
+                    if (!modpackSuccess)
                     {
-                        lblDurum.Text = "İptal edildi.";
-                        btnOyna.Enabled = true;
-                        return;
+                        var dialogResult = MessageBox.Show(
+                            "Mod paketi indirilemedi/kurulamadı. Oyunu yine de mod paketi olmadan başlatmak istiyor musunuz?",
+                            "Mod Paketi Hatası",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Warning);
+
+                        if (dialogResult == DialogResult.No)
+                        {
+                            lblDurum.Text = "İptal edildi.";
+                            btnOyna.Enabled = true;
+                            return;
+                        }
                     }
                 }
 
