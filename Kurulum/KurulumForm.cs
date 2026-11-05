@@ -21,6 +21,16 @@ namespace Kurulum
         public KurulumForm()
         {
             InitializeComponent();
+            try
+            {
+                string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
+                if (File.Exists(iconPath))
+                {
+                    this.Icon = new System.Drawing.Icon(iconPath);
+                }
+            }
+            catch { }
+
             this.btnYukle.Click  += new System.EventHandler(this.btnYukle_Click);
             this.btnKaldir.Click += new System.EventHandler(this.btnKaldir_Click);
 

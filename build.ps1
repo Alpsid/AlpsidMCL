@@ -5,6 +5,8 @@ $DotNetExe = "C:\Program Files\Unity\Hub\Editor\6000.5.6f1\Editor\Data\DotNetSdk
 
 Write-Host "1. Building Launcher as Single File..." -ForegroundColor Green
 & $DotNetExe publish MinecraftLauncher.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o "./publish_launcher"
+Copy-Item "./logo.png" "./publish_launcher/logo.png" -Force -ErrorAction SilentlyContinue
+Copy-Item "./app.ico" "./publish_launcher/app.ico" -Force -ErrorAction SilentlyContinue
 
 Write-Host "2. Preparing Installer Resources..." -ForegroundColor Green
 if (-not (Test-Path "./Kurulum/Resources")) {

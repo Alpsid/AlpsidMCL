@@ -32,13 +32,178 @@ namespace Minecraft_launcher
             Directory.CreateDirectory(alpsidMclDir);
             _launcher = new MinecraftLauncher(new MinecraftPath(alpsidMclDir));
 
+            // Uygulama ve form simgesini yükle
+            LoadAppIconAndLogo();
+
             // Bind Form Load and button click events
             this.Load += new System.EventHandler(this.Form1_Load);
             this.FormClosing += (s, e) => SaveConfig();
             this.btnOyna.Click += new System.EventHandler(this.btnOyna_Click);
+
+            // Alpsid Mods menüsü olayları
+            InitializeModsMenuEvents();
         }
 
-        private const string LAUNCHER_VERSION = "1.0.3";
+        private void InitializeModsMenuEvents()
+        {
+            btnAlpsidMods.Click += (s, e) => ToggleModsMenu();
+            btnCloseModsMenu.Click += (s, e) => CloseModsMenu();
+
+            btnNavHome.Click += (s, e) => SetModsActiveTab("Home");
+            btnNavMods.Click += (s, e) => SetModsActiveTab("Mods");
+            btnNavResourcePacks.Click += (s, e) => SetModsActiveTab("ResourcePacks");
+            btnNavShaders.Click += (s, e) => SetModsActiveTab("Shaders");
+
+            btnCreateModpack.Click += (s, e) =>
+            {
+                MessageBox.Show(
+                    "Yeni Mod Paketi Sihirbazı yakında aktif olacak!\n" +
+                    "Buradan mod paketinizin adını, Minecraft sürümünü (Forge/NeoForge/Fabric) seçip tek tıkla profil oluşturabileceksiniz.",
+                    "Yeni Mod Paketi Oluştur",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            };
+
+            txtModSearch.TextChanged += (s, e) =>
+            {
+                string query = txtModSearch.Text.Trim();
+                if (!string.IsNullOrEmpty(query))
+                {
+                    lblModsContentPlaceholder.Text = $"🔍 '{query}' için arama yapılıyor...\r\n\r\n(Mod ve paket listeleme entegrasyonu sonraki adımda yüklenecektir)";
+                }
+            };
+
+            LoadRecentModpacks();
+        }
+
+        private void ToggleModsMenu()
+        {
+            if (pnlModsMenu.Visible)
+            {
+                CloseModsMenu();
+            }
+            else
+            {
+                OpenModsMenu();
+            }
+        }
+
+        private void OpenModsMenu()
+        {
+            pnlMcNews.Visible = false;
+            pnlLauncherNews.Visible = false;
+            pnlModsMenu.Visible = true;
+            pnlModsMenu.BringToFront();
+            btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(137, 180, 250); // Mavi aktif vurgusu
+        }
+
+        private void CloseModsMenu()
+        {
+            pnlModsMenu.Visible = false;
+            pnlMcNews.Visible = true;
+            pnlLauncherNews.Visible = true;
+            btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(203, 166, 247); // Orijinal lila rengi
+        }
+
+        private void SetModsActiveTab(string tabName)
+        {
+            // Sekme buton renklerini güncelle
+            var activeBg = System.Drawing.Color.FromArgb(49, 50, 68);
+            var activeFg = System.Drawing.Color.FromArgb(245, 224, 220);
+            var inactiveBg = System.Drawing.Color.FromArgb(30, 30, 46);
+            var inactiveFg = System.Drawing.Color.FromArgb(166, 173, 200);
+
+            btnNavHome.BackColor = (tabName == "Home") ? activeBg : inactiveBg;
+            btnNavHome.ForeColor = (tabName == "Home") ? activeFg : inactiveFg;
+
+            btnNavMods.BackColor = (tabName == "Mods") ? activeBg : inactiveBg;
+            btnNavMods.ForeColor = (tabName == "Mods") ? activeFg : inactiveFg;
+
+            btnNavResourcePacks.BackColor = (tabName == "ResourcePacks") ? activeBg : inactiveBg;
+            btnNavResourcePacks.ForeColor = (tabName == "ResourcePacks") ? activeFg : inactiveFg;
+
+            btnNavShaders.BackColor = (tabName == "Shaders") ? activeBg : inactiveBg;
+            btnNavShaders.ForeColor = (tabName == "Shaders") ? activeFg : inactiveFg;
+
+            switch (tabName)
+            {
+                case "Home":
+                    lblModsContentPlaceholder.Text =
+                        "📁 TÜM MOD PAKETLERİ (HOME)\r\n\r\n" +
+                        "Henüz oluşturulmuş özel bir mod paketiniz bulunmuyor.\r\n" +
+                        "Sol menüdeki '➕ Mod Paketi Oluştur' butonuna tıklayarak ilk mod paketinizi hazırlayabilirsiniz.\r\n\r\n" +
+                        "💡 Burası kurulu mod paketlerinizi profil olarak yöneteceğiniz ve tek tıkla oynayabileceğiniz alandır.";
+                    break;
+
+                case "Mods":
+                    lblModsContentPlaceholder.Text =
+                        "🧩 MOD LİSTESİ\r\n\r\n" +
+                        "Popüler ve güncel modlar burada listelenecektir.\r\n" +
+                        "Yukarıdaki arama çubuğunu kullanarak dilediğiniz modu aratabilirsiniz.";
+                    break;
+
+                case "ResourcePacks":
+                    lblModsContentPlaceholder.Text =
+                        "🎨 RESOURCE PACKS (DOKU PAKETLERİ)\r\n\r\n" +
+                        "Minecraft dünyanızı özelleştirecek doku paketleri burada yer alacaktır.\r\n" +
+                        "Yukarıdaki arama çubuğunu kullanarak doku paketlerini aratabilirsiniz.";
+                    break;
+
+                case "Shaders":
+                    lblModsContentPlaceholder.Text =
+                        "✨ SHADERS (GÖLGELENDİRİCİLER)\r\n\r\n" +
+                        "Gerçekçi gölgeler ve ışık efektleri sunan shader paketleri burada yer alacaktır.\r\n" +
+                        "Yukarıdaki arama çubuğunu kullanarak sisteminize uygun shader paketlerini aratabilirsiniz.";
+                    break;
+            }
+        }
+
+        private void LoadRecentModpacks()
+        {
+            lstRecentModpacks.Items.Clear();
+            // Yalnızca mod paketleri listelenir, vanilla sürüm konulmaz
+            string alpsidDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "AlpsidMCL");
+            string modpacksDir = Path.Combine(alpsidDir, "modpacks");
+
+            if (Directory.Exists(modpacksDir))
+            {
+                var dirs = Directory.GetDirectories(modpacksDir);
+                foreach (var dir in dirs)
+                {
+                    string packName = Path.GetFileName(dir);
+                    lstRecentModpacks.Items.Add($"📦 {packName}");
+                    if (lstRecentModpacks.Items.Count >= 5) break;
+                }
+            }
+
+            if (lstRecentModpacks.Items.Count == 0)
+            {
+                lstRecentModpacks.Items.Add("(Henüz mod paketi yok)");
+            }
+        }
+
+        private void LoadAppIconAndLogo()
+        {
+            try
+            {
+                string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
+                if (File.Exists(iconPath))
+                {
+                    this.Icon = new System.Drawing.Icon(iconPath);
+                }
+
+                string logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logo.png");
+                if (File.Exists(logoPath))
+                {
+                    picLogo.Image = System.Drawing.Image.FromFile(logoPath);
+                }
+            }
+            catch { }
+        }
+
+        private const string LAUNCHER_VERSION = "1.0.6";
 
         private async void Form1_Load(object? sender, EventArgs e)
         {
@@ -88,21 +253,82 @@ namespace Minecraft_launcher
                 }
                 else
                 {
-                    lblDurum.Text = "Hata: Kararlı (Release) sürüm bulunamadı.";
-                    lblMcNewsWarning.Visible = true;
+                    // İnternet yoksa veya liste boşsa yerel yüklü sürümleri dene
+                    LoadLocalInstalledVersions();
                 }
                 progressBar1.Value = 100;
 
                 // Kaydedilmiş ayarları yükle
                 LoadConfig();
             }
-            catch (Exception ex)
+            catch
             {
-                lblDurum.Text = "Hata: Sürüm listesi alınamadı.";
-                lblMcNewsWarning.Visible = true;
-                lblMcNewsWarning.Text = "⚠️ Veri Alınamadı, İnternet Bağlantısı Yok";
+                // İnternet hatası: Yerel yüklü sürümleri tespit et
+                LoadLocalInstalledVersions();
                 progressBar1.Value = 0;
             }
+        }
+
+        private void LoadLocalInstalledVersions()
+        {
+            cmbSurumler.Items.Clear();
+            string alpsidVersionsDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "AlpsidMCL", "versions");
+
+            var found = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            if (Directory.Exists(alpsidVersionsDir))
+            {
+                foreach (var dir in Directory.GetDirectories(alpsidVersionsDir))
+                {
+                    string name = Path.GetFileName(dir);
+                    string jsonFile = Path.Combine(dir, $"{name}.json");
+                    if (File.Exists(jsonFile))
+                    {
+                        found.Add(name);
+                    }
+                }
+            }
+
+            // Orijinal .minecraft dizinindeki yüklü sürümleri de alternatif olarak bul
+            string vanillaVersionsDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                ".minecraft", "versions");
+
+            if (Directory.Exists(vanillaVersionsDir))
+            {
+                foreach (var dir in Directory.GetDirectories(vanillaVersionsDir))
+                {
+                    string name = Path.GetFileName(dir);
+                    string jsonFile = Path.Combine(dir, $"{name}.json");
+                    if (File.Exists(jsonFile))
+                    {
+                        found.Add(name);
+                    }
+                }
+            }
+
+            foreach (var ver in found)
+            {
+                cmbSurumler.Items.Add(ver);
+            }
+
+            if (cmbSurumler.Items.Count > 0)
+            {
+                cmbSurumler.SelectedIndex = 0;
+                lblDurum.Text = "Çevrimdışı mod: Yüklü yerel sürümler hazır.";
+                lblMcNewsWarning.Visible = true;
+                lblMcNewsWarning.Text = "⚠️ Çevrimdışı Mod (Yalnızca yüklü sürümler oynanabilir)";
+            }
+            else
+            {
+                lblDurum.Text = "Hata: Yüklü sürüm bulunamadı ve internet bağlantısı yok.";
+                lblMcNewsWarning.Visible = true;
+                lblMcNewsWarning.Text = "⚠️ Veri Alınamadı, İnternet Bağlantısı Yok";
+            }
+
+            LoadConfig();
         }
 
         private async Task LoadNewsAsync()
@@ -235,16 +461,18 @@ namespace Minecraft_launcher
                         lblDurum.Text = $"Güncelleme indiriliyor: %{pct}";
                     });
 
-                    // Güncellenecek hedef her zaman AppData altındaki asıl launcher dosyasıdır
-                    string targetLauncherPath = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
-                        "AlpsidMCL", 
-                        "MinecraftLauncher.exe");
+                    // Güncellenecek hedef: gerçekte çalışan EXE'nin tam yolu
+                    // Environment.ProcessPath çalışan uygulamanın gerçek konumunu verir
+                    string targetLauncherPath = Environment.ProcessPath 
+                        ?? Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+                            "AlpsidMCL", 
+                            "MinecraftLauncher.exe");
 
                     await Updater.DownloadAndApplyUpdateAsync(downloadUrl, targetLauncherPath, progress);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // Güncelleme başarısız olsa bile oyunun oynanmasına engel olma
                 lblDurum.Text = "Güncelleme denetlenemedi.";
@@ -294,10 +522,6 @@ namespace Minecraft_launcher
 
                 string targetVersion = selectedVersion;
 
-                // Step 1: Install core vanilla version
-                lblDurum.Text = $"{selectedVersion} Vanilla sürümü kuruluyor...";
-                progressBar1.Value = 20;
-
                 var fileProgress = new Progress<InstallerProgressChangedEventArgs>(progress =>
                 {
                     if (progress.TotalTasks > 0)
@@ -308,8 +532,39 @@ namespace Minecraft_launcher
                     lblDurum.Text = $"İndiriliyor: {progress.Name} ({progress.ProgressedTasks}/{progress.TotalTasks})";
                 });
 
-                // Trigger Vanilla installation first
-                await _launcher.InstallAsync(selectedVersion, fileProgress, new Progress<ByteProgress>(), _cts.Token);
+                // Step 1: Install or verify core vanilla version
+                // Çevrimdışı modda eğer sürüm zaten yüklüyse ve internet yoksa kuruluma zorlama
+                try
+                {
+                    lblDurum.Text = $"{selectedVersion} Vanilla sürümü kontrol ediliyor...";
+                    progressBar1.Value = 20;
+
+                    // Trigger Vanilla installation
+                    await _launcher.InstallAsync(selectedVersion, fileProgress, new Progress<ByteProgress>(), _cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    // İnternet yoksa ama sürüm yerel olarak mevcutsa oynamaya devam et
+                    string alpsidVerDir = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "AlpsidMCL", "versions", selectedVersion);
+
+                    string vanillaVerDir = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        ".minecraft", "versions", selectedVersion);
+
+                    // Eğer sürüm .minecraft içinde varsa ve AlpsidMCL içinde yoksa kopyala
+                    if (!Directory.Exists(alpsidVerDir) && Directory.Exists(vanillaVerDir))
+                    {
+                        CopyDirectory(vanillaVerDir, alpsidVerDir);
+                    }
+
+                    if (!Directory.Exists(alpsidVerDir))
+                    {
+                        throw new Exception($"'{selectedVersion}' sürümü bilgisayarınızda yüklü değil ve internet bağlantısı bulunamadı.\nDetay: {ex.Message}");
+                    }
+                    lblDurum.Text = $"{selectedVersion} yerel sürüm dosyaları kullanılıyor (Çevrimdışı)...";
+                }
 
                 // Step 2: Install Mod Loader if selected
                 if (rdbForge.Checked)
@@ -440,6 +695,26 @@ namespace Minecraft_launcher
                 catch { }
 
                 return false;
+            }
+        }
+
+        private static void CopyDirectory(string sourceDir, string destinationDir)
+        {
+            var dir = new DirectoryInfo(sourceDir);
+            if (!dir.Exists) return;
+
+            Directory.CreateDirectory(destinationDir);
+
+            foreach (var file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath, true);
+            }
+
+            foreach (var subDir in dir.GetDirectories())
+            {
+                string nextTargetSubDir = Path.Combine(destinationDir, subDir.Name);
+                CopyDirectory(subDir.FullName, nextTargetSubDir);
             }
         }
     }
