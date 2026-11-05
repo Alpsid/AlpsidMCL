@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Alpsid/AlpsidMCL/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/Alpsid/AlpsidMCL?style=for-the-badge&color=a6e3a1&label=Son%20Sürüm"/></a>
-  <a href="https://github.com/Alpsid/AlpsidMCL/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/Alpsid/AlpsidMCL/total?style=for-the-badge&color=89b4fa&label=İndirme"/></a>
-  <a href="https://github.com/Alpsid/AlpsidMCL/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/Alpsid/AlpsidMCL?style=for-the-badge&color=f9e2af"/></a>
+  <a href="https://github.com/Alpsid/AlpsidMCL/releases/latest"><img alt="Latest Release" src="https://img.shields.io/github/v/release/Alpsid/AlpsidMCL?style=for-the-badge&color=a6e3a1&label=Latest"/></a>
+  <a href="https://github.com/Alpsid/AlpsidMCL/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/Alpsid/AlpsidMCL/total?style=for-the-badge&color=89b4fa&label=Downloads"/></a>
+  <img alt="Platform" src="https://img.shields.io/badge/Platform-Windows-blue?style=for-the-badge&color=f9e2af"/>
 </p>
 
 ---
