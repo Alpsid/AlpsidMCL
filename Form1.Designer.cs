@@ -36,17 +36,40 @@ namespace Minecraft_launcher
             this.cmbSurumler = new System.Windows.Forms.ComboBox();
             this.lblRam = new System.Windows.Forms.Label();
             this.cmbRam = new System.Windows.Forms.ComboBox();
-            this.btnOyna = new System.Windows.Forms.Button();
             this.btnAlpsidMods = new System.Windows.Forms.Button();
+            this.btnOyna = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
+            this.btnFolder = new System.Windows.Forms.Button();
+            this.pnlSettingsMenu = new System.Windows.Forms.Panel();
+            this.pnlSettingsTopBar = new System.Windows.Forms.Panel();
+            this.lblSettingsTitle = new System.Windows.Forms.Label();
+            this.btnCloseSettingsMenu = new System.Windows.Forms.Button();
+            this.pnlSettingsContent = new System.Windows.Forms.Panel();
+            this.grpVersionFilters = new System.Windows.Forms.GroupBox();
+            this.chkShowSnapshots = new System.Windows.Forms.CheckBox();
+            this.chkShowBetas = new System.Windows.Forms.CheckBox();
+            this.chkShowAlphas = new System.Windows.Forms.CheckBox();
+            this.grpWindowSettings = new System.Windows.Forms.GroupBox();
+            this.chkResizableWindow = new System.Windows.Forms.CheckBox();
+            this.lblWindowSizeHint = new System.Windows.Forms.Label();
+            this.grpBackupSettings = new System.Windows.Forms.GroupBox();
+            this.chkEnableBackup = new System.Windows.Forms.CheckBox();
+            this.lblMaxBackupSize = new System.Windows.Forms.Label();
+            this.cmbMaxBackupSize = new System.Windows.Forms.ComboBox();
+            this.lblBackupRetention = new System.Windows.Forms.Label();
+            this.cmbBackupRetention = new System.Windows.Forms.ComboBox();
+            this.lblBackupFrequency = new System.Windows.Forms.Label();
+            this.cmbBackupFrequency = new System.Windows.Forms.ComboBox();
+            this.btnBackupNow = new System.Windows.Forms.Button();
             this.pnlModsMenu = new System.Windows.Forms.Panel();
             this.pnlModsTopBar = new System.Windows.Forms.Panel();
             this.btnNavHome = new System.Windows.Forms.Button();
             this.btnNavMods = new System.Windows.Forms.Button();
             this.btnNavResourcePacks = new System.Windows.Forms.Button();
             this.btnNavShaders = new System.Windows.Forms.Button();
+            this.cmbSortMods = new System.Windows.Forms.ComboBox();
             this.txtModSearch = new System.Windows.Forms.TextBox();
             this.btnCloseModsMenu = new System.Windows.Forms.Button();
-            this.lblModsTitle = new System.Windows.Forms.Label();
             this.pnlModsLeft = new System.Windows.Forms.Panel();
             this.btnCreateModpack = new System.Windows.Forms.Button();
             this.lblRecentModpacksTitle = new System.Windows.Forms.Label();
@@ -99,6 +122,7 @@ namespace Minecraft_launcher
             // 
             // pnlCenter
             // 
+            this.pnlCenter.Controls.Add(this.pnlSettingsMenu);
             this.pnlCenter.Controls.Add(this.pnlModsMenu);
             this.pnlCenter.Controls.Add(this.pnlMcNews);
             this.pnlCenter.Controls.Add(this.pnlLauncherNews);
@@ -106,6 +130,276 @@ namespace Minecraft_launcher
             this.pnlCenter.Name = "pnlCenter";
             this.pnlCenter.Size = new System.Drawing.Size(900, 370);
             this.pnlCenter.TabIndex = 2;
+            // 
+            // pnlSettingsMenu
+            // 
+            this.pnlSettingsMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(37)))));
+            this.pnlSettingsMenu.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlSettingsMenu.Controls.Add(this.pnlSettingsContent);
+            this.pnlSettingsMenu.Controls.Add(this.pnlSettingsTopBar);
+            this.pnlSettingsMenu.Location = new System.Drawing.Point(0, 0);
+            this.pnlSettingsMenu.Name = "pnlSettingsMenu";
+            this.pnlSettingsMenu.Size = new System.Drawing.Size(900, 365);
+            this.pnlSettingsMenu.TabIndex = 3;
+            this.pnlSettingsMenu.Visible = false;
+            // 
+            // pnlSettingsTopBar
+            // 
+            this.pnlSettingsTopBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.pnlSettingsTopBar.Controls.Add(this.lblSettingsTitle);
+            this.pnlSettingsTopBar.Controls.Add(this.btnCloseSettingsMenu);
+            this.pnlSettingsTopBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSettingsTopBar.Location = new System.Drawing.Point(0, 0);
+            this.pnlSettingsTopBar.Name = "pnlSettingsTopBar";
+            this.pnlSettingsTopBar.Size = new System.Drawing.Size(898, 48);
+            this.pnlSettingsTopBar.TabIndex = 0;
+            // 
+            // lblSettingsTitle
+            // 
+            this.lblSettingsTitle.AutoSize = true;
+            this.lblSettingsTitle.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold);
+            this.lblSettingsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(226)))), ((int)(((byte)(175)))));
+            this.lblSettingsTitle.Location = new System.Drawing.Point(15, 13);
+            this.lblSettingsTitle.Name = "lblSettingsTitle";
+            this.lblSettingsTitle.Size = new System.Drawing.Size(185, 21);
+            this.lblSettingsTitle.TabIndex = 0;
+            this.lblSettingsTitle.Text = "⚙️ LAUNCHER AYARLARI";
+            // 
+            // btnCloseSettingsMenu
+            // 
+            this.btnCloseSettingsMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCloseSettingsMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(139)))), ((int)(((byte)(168)))));
+            this.btnCloseSettingsMenu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCloseSettingsMenu.FlatAppearance.BorderSize = 0;
+            this.btnCloseSettingsMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCloseSettingsMenu.Font = new System.Drawing.Font("Segoe UI Black", 10F, System.Drawing.FontStyle.Bold);
+            this.btnCloseSettingsMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.btnCloseSettingsMenu.Location = new System.Drawing.Point(800, 8);
+            this.btnCloseSettingsMenu.Name = "btnCloseSettingsMenu";
+            this.btnCloseSettingsMenu.Size = new System.Drawing.Size(88, 32);
+            this.btnCloseSettingsMenu.TabIndex = 1;
+            this.btnCloseSettingsMenu.Text = "✕ Kapat";
+            this.btnCloseSettingsMenu.UseVisualStyleBackColor = false;
+            // 
+            // pnlSettingsContent
+            // 
+            this.pnlSettingsContent.AutoScroll = true;
+            this.pnlSettingsContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(37)))));
+            this.pnlSettingsContent.Controls.Add(this.grpBackupSettings);
+            this.pnlSettingsContent.Controls.Add(this.grpWindowSettings);
+            this.pnlSettingsContent.Controls.Add(this.grpVersionFilters);
+            this.pnlSettingsContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlSettingsContent.Location = new System.Drawing.Point(0, 48);
+            this.pnlSettingsContent.Name = "pnlSettingsContent";
+            this.pnlSettingsContent.Padding = new System.Windows.Forms.Padding(15);
+            this.pnlSettingsContent.Size = new System.Drawing.Size(898, 315);
+            this.pnlSettingsContent.TabIndex = 1;
+            // 
+            // grpVersionFilters
+            // 
+            this.grpVersionFilters.Controls.Add(this.chkShowAlphas);
+            this.grpVersionFilters.Controls.Add(this.chkShowBetas);
+            this.grpVersionFilters.Controls.Add(this.chkShowSnapshots);
+            this.grpVersionFilters.Font = new System.Drawing.Font("Segoe UI Bold", 10F);
+            this.grpVersionFilters.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(227)))), ((int)(((byte)(161)))));
+            this.grpVersionFilters.Location = new System.Drawing.Point(15, 10);
+            this.grpVersionFilters.Name = "grpVersionFilters";
+            this.grpVersionFilters.Size = new System.Drawing.Size(415, 120);
+            this.grpVersionFilters.TabIndex = 0;
+            this.grpVersionFilters.TabStop = false;
+            this.grpVersionFilters.Text = "🕹️ Sürüm Görünürlük Ayarları";
+            // 
+            // chkShowSnapshots
+            // 
+            this.chkShowSnapshots.AutoSize = true;
+            this.chkShowSnapshots.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.chkShowSnapshots.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.chkShowSnapshots.Location = new System.Drawing.Point(20, 28);
+            this.chkShowSnapshots.Name = "chkShowSnapshots";
+            this.chkShowSnapshots.Size = new System.Drawing.Size(217, 21);
+            this.chkShowSnapshots.TabIndex = 0;
+            this.chkShowSnapshots.Text = "Snapshot Sürümlerini Göster";
+            this.chkShowSnapshots.UseVisualStyleBackColor = true;
+            // 
+            // chkShowBetas
+            // 
+            this.chkShowBetas.AutoSize = true;
+            this.chkShowBetas.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.chkShowBetas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.chkShowBetas.Location = new System.Drawing.Point(20, 56);
+            this.chkShowBetas.Name = "chkShowBetas";
+            this.chkShowBetas.Size = new System.Drawing.Size(232, 21);
+            this.chkShowBetas.TabIndex = 1;
+            this.chkShowBetas.Text = "Eski Beta (b) Sürümlerini Göster";
+            this.chkShowBetas.UseVisualStyleBackColor = true;
+            // 
+            // chkShowAlphas
+            // 
+            this.chkShowAlphas.AutoSize = true;
+            this.chkShowAlphas.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.chkShowAlphas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.chkShowAlphas.Location = new System.Drawing.Point(20, 84);
+            this.chkShowAlphas.Name = "chkShowAlphas";
+            this.chkShowAlphas.Size = new System.Drawing.Size(240, 21);
+            this.chkShowAlphas.TabIndex = 2;
+            this.chkShowAlphas.Text = "Eski Alpha (a) Sürümlerini Göster";
+            this.chkShowAlphas.UseVisualStyleBackColor = true;
+            // 
+            // grpWindowSettings
+            // 
+            this.grpWindowSettings.Controls.Add(this.lblWindowSizeHint);
+            this.grpWindowSettings.Controls.Add(this.chkResizableWindow);
+            this.grpWindowSettings.Font = new System.Drawing.Font("Segoe UI Bold", 10F);
+            this.grpWindowSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(180)))), ((int)(((byte)(250)))));
+            this.grpWindowSettings.Location = new System.Drawing.Point(15, 140);
+            this.grpWindowSettings.Name = "grpWindowSettings";
+            this.grpWindowSettings.Size = new System.Drawing.Size(415, 155);
+            this.grpWindowSettings.TabIndex = 1;
+            this.grpWindowSettings.TabStop = false;
+            this.grpWindowSettings.Text = "📐 Pencere Boyutlandırma";
+            // 
+            // chkResizableWindow
+            // 
+            this.chkResizableWindow.AutoSize = true;
+            this.chkResizableWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.chkResizableWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.chkResizableWindow.Location = new System.Drawing.Point(20, 32);
+            this.chkResizableWindow.Name = "chkResizableWindow";
+            this.chkResizableWindow.Size = new System.Drawing.Size(256, 21);
+            this.chkResizableWindow.TabIndex = 0;
+            this.chkResizableWindow.Text = "Pencere Boyutlandırmayı Aktif Et";
+            this.chkResizableWindow.UseVisualStyleBackColor = true;
+            // 
+            // lblWindowSizeHint
+            // 
+            this.lblWindowSizeHint.Font = new System.Drawing.Font("Segoe UI", 8.5F);
+            this.lblWindowSizeHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
+            this.lblWindowSizeHint.Location = new System.Drawing.Point(20, 62);
+            this.lblWindowSizeHint.Name = "lblWindowSizeHint";
+            this.lblWindowSizeHint.Size = new System.Drawing.Size(375, 75);
+            this.lblWindowSizeHint.TabIndex = 1;
+            this.lblWindowSizeHint.Text = "Bu seçenek işaretlendiğinde launcher penceresi kenarlarından çekilerek serbestçe büyütülüp küçültülebilir ve tam ekran yapılabilir. Kapatıldığında sabit boyutuna kilitlenir.";
+            // 
+            // grpBackupSettings
+            // 
+            this.grpBackupSettings.Controls.Add(this.btnBackupNow);
+            this.grpBackupSettings.Controls.Add(this.cmbBackupFrequency);
+            this.grpBackupSettings.Controls.Add(this.lblBackupFrequency);
+            this.grpBackupSettings.Controls.Add(this.cmbBackupRetention);
+            this.grpBackupSettings.Controls.Add(this.lblBackupRetention);
+            this.grpBackupSettings.Controls.Add(this.cmbMaxBackupSize);
+            this.grpBackupSettings.Controls.Add(this.lblMaxBackupSize);
+            this.grpBackupSettings.Controls.Add(this.chkEnableBackup);
+            this.grpBackupSettings.Font = new System.Drawing.Font("Segoe UI Bold", 10F);
+            this.grpBackupSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(226)))), ((int)(((byte)(175)))));
+            this.grpBackupSettings.Location = new System.Drawing.Point(445, 10);
+            this.grpBackupSettings.Name = "grpBackupSettings";
+            this.grpBackupSettings.Size = new System.Drawing.Size(435, 285);
+            this.grpBackupSettings.TabIndex = 2;
+            this.grpBackupSettings.TabStop = false;
+            this.grpBackupSettings.Text = "💾 Otomatik Yedekleme Sistemi";
+            // 
+            // chkEnableBackup
+            // 
+            this.chkEnableBackup.AutoSize = true;
+            this.chkEnableBackup.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.chkEnableBackup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.chkEnableBackup.Location = new System.Drawing.Point(20, 28);
+            this.chkEnableBackup.Name = "chkEnableBackup";
+            this.chkEnableBackup.Size = new System.Drawing.Size(268, 21);
+            this.chkEnableBackup.TabIndex = 0;
+            this.chkEnableBackup.Text = "Dünya ve Ayar Yedeklemesini Aç";
+            this.chkEnableBackup.UseVisualStyleBackColor = true;
+            // 
+            // lblMaxBackupSize
+            // 
+            this.lblMaxBackupSize.AutoSize = true;
+            this.lblMaxBackupSize.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.lblMaxBackupSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
+            this.lblMaxBackupSize.Location = new System.Drawing.Point(20, 65);
+            this.lblMaxBackupSize.Name = "lblMaxBackupSize";
+            this.lblMaxBackupSize.Size = new System.Drawing.Size(175, 15);
+            this.lblMaxBackupSize.TabIndex = 1;
+            this.lblMaxBackupSize.Text = "Maksimum Yedek Depolama:";
+            // 
+            // cmbMaxBackupSize
+            // 
+            this.cmbMaxBackupSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.cmbMaxBackupSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMaxBackupSize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbMaxBackupSize.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.cmbMaxBackupSize.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.cmbMaxBackupSize.FormattingEnabled = true;
+            this.cmbMaxBackupSize.Items.AddRange(new object[] { "500 MB", "1 GB", "2 GB", "5 GB", "10 GB" });
+            this.cmbMaxBackupSize.Location = new System.Drawing.Point(220, 62);
+            this.cmbMaxBackupSize.Name = "cmbMaxBackupSize";
+            this.cmbMaxBackupSize.Size = new System.Drawing.Size(190, 23);
+            this.cmbMaxBackupSize.TabIndex = 2;
+            // 
+            // lblBackupRetention
+            // 
+            this.lblBackupRetention.AutoSize = true;
+            this.lblBackupRetention.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.lblBackupRetention.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
+            this.lblBackupRetention.Location = new System.Drawing.Point(20, 105);
+            this.lblBackupRetention.Name = "lblBackupRetention";
+            this.lblBackupRetention.Size = new System.Drawing.Size(155, 15);
+            this.lblBackupRetention.TabIndex = 3;
+            this.lblBackupRetention.Text = "Maksimum Saklama Süresi:";
+            // 
+            // cmbBackupRetention
+            // 
+            this.cmbBackupRetention.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.cmbBackupRetention.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBackupRetention.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBackupRetention.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.cmbBackupRetention.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.cmbBackupRetention.FormattingEnabled = true;
+            this.cmbBackupRetention.Items.AddRange(new object[] { "3 Gün", "7 Gün", "14 Gün", "30 Gün", "Süresiz" });
+            this.cmbBackupRetention.Location = new System.Drawing.Point(220, 102);
+            this.cmbBackupRetention.Name = "cmbBackupRetention";
+            this.cmbBackupRetention.Size = new System.Drawing.Size(190, 23);
+            this.cmbBackupRetention.TabIndex = 4;
+            // 
+            // lblBackupFrequency
+            // 
+            this.lblBackupFrequency.AutoSize = true;
+            this.lblBackupFrequency.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.lblBackupFrequency.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
+            this.lblBackupFrequency.Location = new System.Drawing.Point(20, 145);
+            this.lblBackupFrequency.Name = "lblBackupFrequency";
+            this.lblBackupFrequency.Size = new System.Drawing.Size(110, 15);
+            this.lblBackupFrequency.TabIndex = 5;
+            this.lblBackupFrequency.Text = "Yedekleme Sıklığı:";
+            // 
+            // cmbBackupFrequency
+            // 
+            this.cmbBackupFrequency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.cmbBackupFrequency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbBackupFrequency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbBackupFrequency.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.cmbBackupFrequency.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.cmbBackupFrequency.FormattingEnabled = true;
+            this.cmbBackupFrequency.Items.AddRange(new object[] { "Her Oyundan Çıkışta", "Günde 1 Kez", "Haftada 1 Kez", "Yalnızca Manuel" });
+            this.cmbBackupFrequency.Location = new System.Drawing.Point(220, 142);
+            this.cmbBackupFrequency.Name = "cmbBackupFrequency";
+            this.cmbBackupFrequency.Size = new System.Drawing.Size(190, 23);
+            this.cmbBackupFrequency.TabIndex = 6;
+            // 
+            // btnBackupNow
+            // 
+            this.btnBackupNow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(227)))), ((int)(((byte)(161)))));
+            this.btnBackupNow.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBackupNow.FlatAppearance.BorderSize = 0;
+            this.btnBackupNow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBackupNow.Font = new System.Drawing.Font("Segoe UI Black", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnBackupNow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.btnBackupNow.Location = new System.Drawing.Point(20, 195);
+            this.btnBackupNow.Name = "btnBackupNow";
+            this.btnBackupNow.Size = new System.Drawing.Size(390, 36);
+            this.btnBackupNow.TabIndex = 7;
+            this.btnBackupNow.Text = "⚡ Şimdi Manuel Yedek Al";
+            this.btnBackupNow.UseVisualStyleBackColor = false;
             // 
             // pnlModsMenu
             // 
@@ -123,11 +417,11 @@ namespace Minecraft_launcher
             // pnlModsTopBar
             // 
             this.pnlModsTopBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.pnlModsTopBar.Controls.Add(this.lblModsTitle);
             this.pnlModsTopBar.Controls.Add(this.btnNavHome);
             this.pnlModsTopBar.Controls.Add(this.btnNavMods);
             this.pnlModsTopBar.Controls.Add(this.btnNavResourcePacks);
             this.pnlModsTopBar.Controls.Add(this.btnNavShaders);
+            this.pnlModsTopBar.Controls.Add(this.cmbSortMods);
             this.pnlModsTopBar.Controls.Add(this.txtModSearch);
             this.pnlModsTopBar.Controls.Add(this.btnCloseModsMenu);
             this.pnlModsTopBar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -135,17 +429,6 @@ namespace Minecraft_launcher
             this.pnlModsTopBar.Name = "pnlModsTopBar";
             this.pnlModsTopBar.Size = new System.Drawing.Size(898, 48);
             this.pnlModsTopBar.TabIndex = 0;
-            // 
-            // lblModsTitle
-            // 
-            this.lblModsTitle.AutoSize = true;
-            this.lblModsTitle.Font = new System.Drawing.Font("Segoe UI Black", 12F, System.Drawing.FontStyle.Bold);
-            this.lblModsTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(166)))), ((int)(((byte)(247)))));
-            this.lblModsTitle.Location = new System.Drawing.Point(12, 13);
-            this.lblModsTitle.Name = "lblModsTitle";
-            this.lblModsTitle.Size = new System.Drawing.Size(125, 21);
-            this.lblModsTitle.TabIndex = 6;
-            this.lblModsTitle.Text = "📦 ALPSID MODS";
             // 
             // btnNavHome
             // 
@@ -155,7 +438,7 @@ namespace Minecraft_launcher
             this.btnNavHome.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavHome.Font = new System.Drawing.Font("Segoe UI Bold", 9.5F);
             this.btnNavHome.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(224)))), ((int)(((byte)(220)))));
-            this.btnNavHome.Location = new System.Drawing.Point(145, 8);
+            this.btnNavHome.Location = new System.Drawing.Point(12, 8);
             this.btnNavHome.Name = "btnNavHome";
             this.btnNavHome.Size = new System.Drawing.Size(85, 32);
             this.btnNavHome.TabIndex = 0;
@@ -170,9 +453,9 @@ namespace Minecraft_launcher
             this.btnNavMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavMods.Font = new System.Drawing.Font("Segoe UI Bold", 9.5F);
             this.btnNavMods.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
-            this.btnNavMods.Location = new System.Drawing.Point(236, 8);
+            this.btnNavMods.Location = new System.Drawing.Point(103, 8);
             this.btnNavMods.Name = "btnNavMods";
-            this.btnNavMods.Size = new System.Drawing.Size(85, 32);
+            this.btnNavMods.Size = new System.Drawing.Size(80, 32);
             this.btnNavMods.TabIndex = 1;
             this.btnNavMods.Text = "🧩 Mods";
             this.btnNavMods.UseVisualStyleBackColor = false;
@@ -185,9 +468,9 @@ namespace Minecraft_launcher
             this.btnNavResourcePacks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavResourcePacks.Font = new System.Drawing.Font("Segoe UI Bold", 9.5F);
             this.btnNavResourcePacks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
-            this.btnNavResourcePacks.Location = new System.Drawing.Point(327, 8);
+            this.btnNavResourcePacks.Location = new System.Drawing.Point(189, 8);
             this.btnNavResourcePacks.Name = "btnNavResourcePacks";
-            this.btnNavResourcePacks.Size = new System.Drawing.Size(125, 32);
+            this.btnNavResourcePacks.Size = new System.Drawing.Size(145, 32);
             this.btnNavResourcePacks.TabIndex = 2;
             this.btnNavResourcePacks.Text = "🎨 Resource Packs";
             this.btnNavResourcePacks.UseVisualStyleBackColor = false;
@@ -200,24 +483,38 @@ namespace Minecraft_launcher
             this.btnNavShaders.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavShaders.Font = new System.Drawing.Font("Segoe UI Bold", 9.5F);
             this.btnNavShaders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(173)))), ((int)(((byte)(200)))));
-            this.btnNavShaders.Location = new System.Drawing.Point(458, 8);
+            this.btnNavShaders.Location = new System.Drawing.Point(340, 8);
             this.btnNavShaders.Name = "btnNavShaders";
             this.btnNavShaders.Size = new System.Drawing.Size(95, 32);
             this.btnNavShaders.TabIndex = 3;
             this.btnNavShaders.Text = "✨ Shaders";
             this.btnNavShaders.UseVisualStyleBackColor = false;
             // 
+            // cmbSortMods
+            // 
+            this.cmbSortMods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.cmbSortMods.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSortMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmbSortMods.Font = new System.Drawing.Font("Segoe UI Semibold", 8.5F);
+            this.cmbSortMods.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.cmbSortMods.FormattingEnabled = true;
+            this.cmbSortMods.Items.AddRange(new object[] { "🔥 Popülerliğe Göre", "⬇️ İndirme Sayısına Göre", "⭐ En Yeni Eklenenler", "🔤 İsim (A-Z)" });
+            this.cmbSortMods.Location = new System.Drawing.Point(442, 13);
+            this.cmbSortMods.Name = "cmbSortMods";
+            this.cmbSortMods.Size = new System.Drawing.Size(160, 21);
+            this.cmbSortMods.TabIndex = 4;
+            // 
             // txtModSearch
             // 
             this.txtModSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
             this.txtModSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtModSearch.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F);
+            this.txtModSearch.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.txtModSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
-            this.txtModSearch.Location = new System.Drawing.Point(565, 12);
+            this.txtModSearch.Location = new System.Drawing.Point(608, 12);
             this.txtModSearch.Name = "txtModSearch";
             this.txtModSearch.PlaceholderText = "🔍 Mod / Paket Ara...";
-            this.txtModSearch.Size = new System.Drawing.Size(225, 24);
-            this.txtModSearch.TabIndex = 4;
+            this.txtModSearch.Size = new System.Drawing.Size(185, 23);
+            this.txtModSearch.TabIndex = 5;
             // 
             // btnCloseModsMenu
             // 
@@ -231,7 +528,7 @@ namespace Minecraft_launcher
             this.btnCloseModsMenu.Location = new System.Drawing.Point(800, 8);
             this.btnCloseModsMenu.Name = "btnCloseModsMenu";
             this.btnCloseModsMenu.Size = new System.Drawing.Size(88, 32);
-            this.btnCloseModsMenu.TabIndex = 5;
+            this.btnCloseModsMenu.TabIndex = 6;
             this.btnCloseModsMenu.Text = "✕ Kapat";
             this.btnCloseModsMenu.UseVisualStyleBackColor = false;
             // 
@@ -443,8 +740,10 @@ namespace Minecraft_launcher
             this.pnlBottom.Controls.Add(this.cmbSurumler);
             this.pnlBottom.Controls.Add(this.lblRam);
             this.pnlBottom.Controls.Add(this.cmbRam);
-            this.pnlBottom.Controls.Add(this.btnOyna);
             this.pnlBottom.Controls.Add(this.btnAlpsidMods);
+            this.pnlBottom.Controls.Add(this.btnOyna);
+            this.pnlBottom.Controls.Add(this.btnSettings);
+            this.pnlBottom.Controls.Add(this.btnFolder);
             this.pnlBottom.Location = new System.Drawing.Point(20, 485);
             this.pnlBottom.Name = "pnlBottom";
             this.pnlBottom.Size = new System.Drawing.Size(900, 75);
@@ -521,21 +820,6 @@ namespace Minecraft_launcher
             this.cmbRam.Size = new System.Drawing.Size(120, 27);
             this.cmbRam.TabIndex = 5;
             // 
-            // btnOyna
-            // 
-            this.btnOyna.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(227)))), ((int)(((byte)(161)))));
-            this.btnOyna.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnOyna.FlatAppearance.BorderSize = 0;
-            this.btnOyna.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOyna.Font = new System.Drawing.Font("Segoe UI Black", 14F, System.Drawing.FontStyle.Bold);
-            this.btnOyna.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.btnOyna.Location = new System.Drawing.Point(620, 15);
-            this.btnOyna.Name = "btnOyna";
-            this.btnOyna.Size = new System.Drawing.Size(185, 45);
-            this.btnOyna.TabIndex = 6;
-            this.btnOyna.Text = "🎮 OYNA";
-            this.btnOyna.UseVisualStyleBackColor = false;
-            // 
             // btnAlpsidMods
             // 
             this.btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(166)))), ((int)(((byte)(247)))));
@@ -544,12 +828,57 @@ namespace Minecraft_launcher
             this.btnAlpsidMods.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAlpsidMods.Font = new System.Drawing.Font("Segoe UI Black", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnAlpsidMods.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
-            this.btnAlpsidMods.Location = new System.Drawing.Point(815, 15);
+            this.btnAlpsidMods.Location = new System.Drawing.Point(615, 15);
             this.btnAlpsidMods.Name = "btnAlpsidMods";
             this.btnAlpsidMods.Size = new System.Drawing.Size(65, 45);
-            this.btnAlpsidMods.TabIndex = 7;
+            this.btnAlpsidMods.TabIndex = 6;
             this.btnAlpsidMods.Text = "📦\nMods";
             this.btnAlpsidMods.UseVisualStyleBackColor = false;
+            // 
+            // btnOyna
+            // 
+            this.btnOyna.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(166)))), ((int)(((byte)(227)))), ((int)(((byte)(161)))));
+            this.btnOyna.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnOyna.FlatAppearance.BorderSize = 0;
+            this.btnOyna.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOyna.Font = new System.Drawing.Font("Segoe UI Black", 14F, System.Drawing.FontStyle.Bold);
+            this.btnOyna.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(27)))));
+            this.btnOyna.Location = new System.Drawing.Point(688, 15);
+            this.btnOyna.Name = "btnOyna";
+            this.btnOyna.Size = new System.Drawing.Size(120, 45);
+            this.btnOyna.TabIndex = 7;
+            this.btnOyna.Text = "🎮 OYNA";
+            this.btnOyna.UseVisualStyleBackColor = false;
+            // 
+            // btnSettings
+            // 
+            this.btnSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.btnSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSettings.FlatAppearance.BorderSize = 0;
+            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSettings.Font = new System.Drawing.Font("Segoe UI Black", 11F, System.Drawing.FontStyle.Bold);
+            this.btnSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(214)))), ((int)(((byte)(244)))));
+            this.btnSettings.Location = new System.Drawing.Point(816, 15);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(34, 45);
+            this.btnSettings.TabIndex = 8;
+            this.btnSettings.Text = "⚙️";
+            this.btnSettings.UseVisualStyleBackColor = false;
+            // 
+            // btnFolder
+            // 
+            this.btnFolder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.btnFolder.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnFolder.FlatAppearance.BorderSize = 0;
+            this.btnFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFolder.Font = new System.Drawing.Font("Segoe UI Black", 11F, System.Drawing.FontStyle.Bold);
+            this.btnFolder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(226)))), ((int)(((byte)(175)))));
+            this.btnFolder.Location = new System.Drawing.Point(854, 15);
+            this.btnFolder.Name = "btnFolder";
+            this.btnFolder.Size = new System.Drawing.Size(34, 45);
+            this.btnFolder.TabIndex = 9;
+            this.btnFolder.Text = "📁";
+            this.btnFolder.UseVisualStyleBackColor = false;
             // 
             // grpModType (Geçici Olarak Gizlendi - Mod Paketi Sisteminde Kullanılacak)
             // 
@@ -626,6 +955,16 @@ namespace Minecraft_launcher
             this.pnlModsLeft.ResumeLayout(false);
             this.pnlModsLeft.PerformLayout();
             this.pnlModsContent.ResumeLayout(false);
+            this.pnlSettingsMenu.ResumeLayout(false);
+            this.pnlSettingsTopBar.ResumeLayout(false);
+            this.pnlSettingsTopBar.PerformLayout();
+            this.pnlSettingsContent.ResumeLayout(false);
+            this.grpVersionFilters.ResumeLayout(false);
+            this.grpVersionFilters.PerformLayout();
+            this.grpWindowSettings.ResumeLayout(false);
+            this.grpWindowSettings.PerformLayout();
+            this.grpBackupSettings.ResumeLayout(false);
+            this.grpBackupSettings.PerformLayout();
             this.grpModType.ResumeLayout(false);
             this.grpModType.PerformLayout();
             this.ResumeLayout(false);
@@ -639,13 +978,34 @@ namespace Minecraft_launcher
         private System.Windows.Forms.PictureBox picLogo;
         private System.Windows.Forms.Label lblSurumEtiketi;
         private System.Windows.Forms.Panel pnlCenter;
+        private System.Windows.Forms.Panel pnlSettingsMenu;
+        private System.Windows.Forms.Panel pnlSettingsTopBar;
+        private System.Windows.Forms.Label lblSettingsTitle;
+        private System.Windows.Forms.Button btnCloseSettingsMenu;
+        private System.Windows.Forms.Panel pnlSettingsContent;
+        private System.Windows.Forms.GroupBox grpVersionFilters;
+        private System.Windows.Forms.CheckBox chkShowSnapshots;
+        private System.Windows.Forms.CheckBox chkShowBetas;
+        private System.Windows.Forms.CheckBox chkShowAlphas;
+        private System.Windows.Forms.GroupBox grpWindowSettings;
+        private System.Windows.Forms.CheckBox chkResizableWindow;
+        private System.Windows.Forms.Label lblWindowSizeHint;
+        private System.Windows.Forms.GroupBox grpBackupSettings;
+        private System.Windows.Forms.CheckBox chkEnableBackup;
+        private System.Windows.Forms.Label lblMaxBackupSize;
+        private System.Windows.Forms.ComboBox cmbMaxBackupSize;
+        private System.Windows.Forms.Label lblBackupRetention;
+        private System.Windows.Forms.ComboBox cmbBackupRetention;
+        private System.Windows.Forms.Label lblBackupFrequency;
+        private System.Windows.Forms.ComboBox cmbBackupFrequency;
+        private System.Windows.Forms.Button btnBackupNow;
         private System.Windows.Forms.Panel pnlModsMenu;
         private System.Windows.Forms.Panel pnlModsTopBar;
-        private System.Windows.Forms.Label lblModsTitle;
         private System.Windows.Forms.Button btnNavHome;
         private System.Windows.Forms.Button btnNavMods;
         private System.Windows.Forms.Button btnNavResourcePacks;
         private System.Windows.Forms.Button btnNavShaders;
+        private System.Windows.Forms.ComboBox cmbSortMods;
         private System.Windows.Forms.TextBox txtModSearch;
         private System.Windows.Forms.Button btnCloseModsMenu;
         private System.Windows.Forms.Panel pnlModsLeft;
@@ -669,8 +1029,10 @@ namespace Minecraft_launcher
         private System.Windows.Forms.ComboBox cmbSurumler;
         private System.Windows.Forms.Label lblRam;
         private System.Windows.Forms.ComboBox cmbRam;
-        private System.Windows.Forms.Button btnOyna;
         private System.Windows.Forms.Button btnAlpsidMods;
+        private System.Windows.Forms.Button btnOyna;
+        private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Button btnFolder;
         private System.Windows.Forms.Label lblDurum;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.GroupBox grpModType;

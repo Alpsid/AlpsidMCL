@@ -20,6 +20,7 @@ namespace Minecraft_launcher
         private MinecraftLauncher _launcher;
         private HttpClient _httpClient;
         private CancellationTokenSource? _cts;
+        private CmlLib.Core.VersionMetadata.VersionMetadataCollection? _cachedVersions;
 
         public Form1()
         {
@@ -42,6 +43,9 @@ namespace Minecraft_launcher
 
             // Alpsid Mods menüsü olayları
             InitializeModsMenuEvents();
+
+            // Alpsid Ayarlar menüsü ve kısayol olayları
+            InitializeSettingsEvents();
         }
 
         private void InitializeModsMenuEvents()
@@ -92,6 +96,8 @@ namespace Minecraft_launcher
         {
             pnlMcNews.Visible = false;
             pnlLauncherNews.Visible = false;
+            pnlSettingsMenu.Visible = false;
+            btnSettings.BackColor = System.Drawing.Color.FromArgb(49, 50, 68);
             pnlModsMenu.Visible = true;
             pnlModsMenu.BringToFront();
             btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(137, 180, 250); // Mavi aktif vurgusu
@@ -103,6 +109,110 @@ namespace Minecraft_launcher
             pnlMcNews.Visible = true;
             pnlLauncherNews.Visible = true;
             btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(203, 166, 247); // Orijinal lila rengi
+        }
+
+        private void InitializeSettingsEvents()
+        {
+            btnSettings.Click += (s, e) => ToggleSettingsMenu();
+            btnCloseSettingsMenu.Click += (s, e) => CloseSettingsMenu();
+
+            btnFolder.Click += (s, e) =>
+            {
+                try
+                {
+                    string alpsidDir = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "AlpsidMCL");
+                    Directory.CreateDirectory(alpsidDir);
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = alpsidDir,
+                        UseShellExecute = true,
+                        Verb = "open"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Klasör açılırken hata oluştu:\n" + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            chkResizableWindow.CheckedChanged += (s, e) =>
+            {
+                if (chkResizableWindow.Checked)
+                {
+                    this.FormBorderStyle = FormBorderStyle.Sizable;
+                    this.MaximizeBox = true;
+                }
+                else
+                {
+                    this.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    this.MaximizeBox = false;
+                    this.Size = new System.Drawing.Size(956, 619);
+                }
+            };
+
+            chkShowSnapshots.CheckedChanged += (s, e) => _ = ReloadVersionsWithFiltersAsync();
+            chkShowBetas.CheckedChanged += (s, e) => _ = ReloadVersionsWithFiltersAsync();
+            chkShowAlphas.CheckedChanged += (s, e) => _ = ReloadVersionsWithFiltersAsync();
+
+            btnBackupNow.Click += async (s, e) =>
+            {
+                btnBackupNow.Enabled = false;
+                btnBackupNow.Text = "⏳ Yedekleniyor...";
+                try
+                {
+                    string resultPath = await Task.Run(() => PerformBackup());
+                    if (!string.IsNullOrEmpty(resultPath))
+                    {
+                        MessageBox.Show($"Yedekleme başarıyla tamamlandı!\nKonum: {resultPath}", "Yedekleme", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Yedeklenecek kayıt (saves) klasörü bulunamadı veya boş.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Yedekleme sırasında hata oluştu:\n" + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    btnBackupNow.Enabled = true;
+                    btnBackupNow.Text = "💾 Şimdi Yedek Al";
+                }
+            };
+        }
+
+        private void ToggleSettingsMenu()
+        {
+            if (pnlSettingsMenu.Visible)
+            {
+                CloseSettingsMenu();
+            }
+            else
+            {
+                OpenSettingsMenu();
+            }
+        }
+
+        private void OpenSettingsMenu()
+        {
+            pnlMcNews.Visible = false;
+            pnlLauncherNews.Visible = false;
+            pnlModsMenu.Visible = false;
+            btnAlpsidMods.BackColor = System.Drawing.Color.FromArgb(203, 166, 247);
+            pnlSettingsMenu.Visible = true;
+            pnlSettingsMenu.BringToFront();
+            btnSettings.BackColor = System.Drawing.Color.FromArgb(137, 180, 250);
+        }
+
+        private void CloseSettingsMenu()
+        {
+            pnlSettingsMenu.Visible = false;
+            pnlMcNews.Visible = true;
+            pnlLauncherNews.Visible = true;
+            btnSettings.BackColor = System.Drawing.Color.FromArgb(49, 50, 68);
         }
 
         private void SetModsActiveTab(string tabName)
@@ -226,40 +336,13 @@ namespace Minecraft_launcher
                 progressBar1.Value = 10;
 
                 // Load Minecraft versions
-                var versions = await _launcher.GetAllVersionsAsync();
+                _cachedVersions = await _launcher.GetAllVersionsAsync();
                 
-                cmbSurumler.Items.Clear();
-                string? latestRelease = null;
-                foreach (var version in versions)
-                {
-                    if (version.Type == "release")
-                    {
-                        if (latestRelease == null)
-                            latestRelease = version.Name;
-
-                        cmbSurumler.Items.Add(version.Name);
-                    }
-                }
-
-                if (cmbSurumler.Items.Count > 0)
-                {
-                    cmbSurumler.SelectedIndex = 0;
-                    lblDurum.Text = "Sürümler yüklendi. Oyuna başlamak için Oyna butonuna basın.";
-                    lblMcNewsWarning.Visible = false;
-                    if (!string.IsNullOrEmpty(latestRelease))
-                    {
-                        lblMcNewsTitle.Text = $"⚔️ MINECRAFT {latestRelease} YENİLİKLERİ";
-                    }
-                }
-                else
-                {
-                    // İnternet yoksa veya liste boşsa yerel yüklü sürümleri dene
-                    LoadLocalInstalledVersions();
-                }
-                progressBar1.Value = 100;
-
                 // Kaydedilmiş ayarları yükle
                 LoadConfig();
+
+                PopulateVersionsDropdown();
+                progressBar1.Value = 100;
             }
             catch
             {
@@ -267,6 +350,86 @@ namespace Minecraft_launcher
                 LoadLocalInstalledVersions();
                 progressBar1.Value = 0;
             }
+        }
+
+        private void PopulateVersionsDropdown()
+        {
+            if (_cachedVersions == null) return;
+
+            string? currentSelection = cmbSurumler.SelectedItem?.ToString();
+            cmbSurumler.Items.Clear();
+
+            bool showSnapshots = chkShowSnapshots.Checked;
+            bool showBetas = chkShowBetas.Checked;
+            bool showAlphas = chkShowAlphas.Checked;
+
+            string? latestRelease = null;
+            foreach (var version in _cachedVersions)
+            {
+                string type = version.Type?.ToLowerInvariant() ?? "";
+                bool include = false;
+
+                if (type == "release")
+                {
+                    include = true;
+                    if (latestRelease == null)
+                        latestRelease = version.Name;
+                }
+                else if (type == "snapshot" && showSnapshots)
+                {
+                    include = true;
+                }
+                else if ((type == "old_beta" || type.Contains("beta")) && showBetas)
+                {
+                    include = true;
+                }
+                else if ((type == "old_alpha" || type.Contains("alpha")) && showAlphas)
+                {
+                    include = true;
+                }
+
+                if (include)
+                {
+                    cmbSurumler.Items.Add(version.Name);
+                }
+            }
+
+            if (cmbSurumler.Items.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(currentSelection) && cmbSurumler.Items.Contains(currentSelection))
+                {
+                    cmbSurumler.SelectedItem = currentSelection;
+                }
+                else
+                {
+                    cmbSurumler.SelectedIndex = 0;
+                }
+
+                lblDurum.Text = "Sürümler yüklendi. Oyuna başlamak için Oyna butonuna basın.";
+                lblMcNewsWarning.Visible = false;
+                if (!string.IsNullOrEmpty(latestRelease))
+                {
+                    lblMcNewsTitle.Text = $"⚔️ MINECRAFT {latestRelease} YENİLİKLERİ";
+                }
+            }
+            else
+            {
+                LoadLocalInstalledVersions();
+            }
+        }
+
+        private async Task ReloadVersionsWithFiltersAsync()
+        {
+            if (_cachedVersions == null)
+            {
+                try
+                {
+                    _cachedVersions = await _launcher.GetAllVersionsAsync();
+                }
+                catch { }
+            }
+
+            PopulateVersionsDropdown();
         }
 
         private void LoadLocalInstalledVersions()
@@ -351,9 +514,12 @@ namespace Minecraft_launcher
 
                 if (!string.IsNullOrWhiteSpace(tagName))
                 {
-                    lblLauncherNewsTitle.Text = string.IsNullOrWhiteSpace(releaseName) 
-                        ? $"📢 ALPSIDMCL {tagName}" 
-                        : $"📢 {releaseName}";
+                    string displayName = string.IsNullOrWhiteSpace(releaseName) ? tagName : releaseName;
+                    if (displayName.Length > 28)
+                    {
+                        displayName = displayName.Substring(0, 25) + "...";
+                    }
+                    lblLauncherNewsTitle.Text = $"📢 {displayName}";
 
                     string cleanBody = string.IsNullOrWhiteSpace(body)
                         ? "• Otomatik Güncelleme desteği devrede.\r\n• İzole %appdata%\\AlpsidMCL dizini korundu.\r\n• Performans ve kararlılık iyileştirmeleri."
@@ -409,6 +575,33 @@ namespace Minecraft_launcher
                     int index = cmbSurumler.Items.IndexOf(v.GetString());
                     if (index >= 0) cmbSurumler.SelectedIndex = index;
                 }
+
+                if (root.TryGetProperty("ShowSnapshots", out var snap) && snap.ValueKind == System.Text.Json.JsonValueKind.True)
+                    chkShowSnapshots.Checked = true;
+                if (root.TryGetProperty("ShowBetas", out var beta) && beta.ValueKind == System.Text.Json.JsonValueKind.True)
+                    chkShowBetas.Checked = true;
+                if (root.TryGetProperty("ShowAlphas", out var alpha) && alpha.ValueKind == System.Text.Json.JsonValueKind.True)
+                    chkShowAlphas.Checked = true;
+                if (root.TryGetProperty("ResizableWindow", out var rw) && rw.ValueKind == System.Text.Json.JsonValueKind.True)
+                    chkResizableWindow.Checked = true;
+                if (root.TryGetProperty("EnableBackup", out var eb) && eb.ValueKind == System.Text.Json.JsonValueKind.True)
+                    chkEnableBackup.Checked = true;
+
+                if (root.TryGetProperty("MaxBackupSize", out var mbs) && !string.IsNullOrWhiteSpace(mbs.GetString()))
+                {
+                    int idx = cmbMaxBackupSize.Items.IndexOf(mbs.GetString());
+                    if (idx >= 0) cmbMaxBackupSize.SelectedIndex = idx;
+                }
+                if (root.TryGetProperty("BackupRetention", out var ret) && !string.IsNullOrWhiteSpace(ret.GetString()))
+                {
+                    int idx = cmbBackupRetention.Items.IndexOf(ret.GetString());
+                    if (idx >= 0) cmbBackupRetention.SelectedIndex = idx;
+                }
+                if (root.TryGetProperty("BackupFrequency", out var freq) && !string.IsNullOrWhiteSpace(freq.GetString()))
+                {
+                    int idx = cmbBackupFrequency.Items.IndexOf(freq.GetString());
+                    if (idx >= 0) cmbBackupFrequency.SelectedIndex = idx;
+                }
             }
             catch { }
         }
@@ -426,7 +619,15 @@ namespace Minecraft_launcher
                 {
                     Username = user,
                     SelectedRam = ram,
-                    SelectedVersion = ver
+                    SelectedVersion = ver,
+                    ShowSnapshots = chkShowSnapshots.Checked,
+                    ShowBetas = chkShowBetas.Checked,
+                    ShowAlphas = chkShowAlphas.Checked,
+                    ResizableWindow = chkResizableWindow.Checked,
+                    EnableBackup = chkEnableBackup.Checked,
+                    MaxBackupSize = cmbMaxBackupSize.SelectedItem?.ToString(),
+                    BackupRetention = cmbBackupRetention.SelectedItem?.ToString(),
+                    BackupFrequency = cmbBackupFrequency.SelectedItem?.ToString()
                 };
 
                 string json = System.Text.Json.JsonSerializer.Serialize(configObj, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
@@ -716,6 +917,90 @@ namespace Minecraft_launcher
                 string nextTargetSubDir = Path.Combine(destinationDir, subDir.Name);
                 CopyDirectory(subDir.FullName, nextTargetSubDir);
             }
+        }
+
+        private string PerformBackup()
+        {
+            string alpsidDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "AlpsidMCL");
+
+            string savesDir = Path.Combine(alpsidDir, "saves");
+            if (!Directory.Exists(savesDir) || Directory.GetFileSystemEntries(savesDir).Length == 0)
+            {
+                return string.Empty;
+            }
+
+            string backupsDir = Path.Combine(alpsidDir, "backups");
+            Directory.CreateDirectory(backupsDir);
+
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string zipFileName = $"backup_{timestamp}.zip";
+            string zipFilePath = Path.Combine(backupsDir, zipFileName);
+
+            // Zip saves folder
+            ZipFile.CreateFromDirectory(savesDir, zipFilePath, CompressionLevel.Optimal, false);
+
+            // Cleanup old backups based on max retention and max size
+            EnforceBackupLimits(backupsDir);
+
+            return zipFilePath;
+        }
+
+        private void EnforceBackupLimits(string backupsDir)
+        {
+            try
+            {
+                var dirInfo = new DirectoryInfo(backupsDir);
+                var zipFiles = dirInfo.GetFiles("*.zip", SearchOption.TopDirectoryOnly);
+                if (zipFiles.Length == 0) return;
+
+                // 1. Retention period filter
+                string retentionSetting = cmbBackupRetention.SelectedItem?.ToString() ?? "14 Gün";
+                int retentionDays = 14;
+                if (retentionSetting.Contains("3")) retentionDays = 3;
+                else if (retentionSetting.Contains("7")) retentionDays = 7;
+                else if (retentionSetting.Contains("14")) retentionDays = 14;
+                else if (retentionSetting.Contains("30")) retentionDays = 30;
+                else if (retentionSetting.Contains("Süresiz")) retentionDays = 99999;
+
+                DateTime cutoff = DateTime.Now.AddDays(-retentionDays);
+                foreach (var file in zipFiles)
+                {
+                    if (file.CreationTime < cutoff && retentionDays < 99999)
+                    {
+                        try { file.Delete(); } catch { }
+                    }
+                }
+
+                // 2. Max size filter (MB)
+                string sizeSetting = cmbMaxBackupSize.SelectedItem?.ToString() ?? "2 GB";
+                long maxBytes = 2L * 1024 * 1024 * 1024;
+                if (sizeSetting.Contains("500 MB")) maxBytes = 500L * 1024 * 1024;
+                else if (sizeSetting.Contains("1 GB")) maxBytes = 1024L * 1024 * 1024;
+                else if (sizeSetting.Contains("2 GB")) maxBytes = 2L * 1024 * 1024 * 1024;
+                else if (sizeSetting.Contains("5 GB")) maxBytes = 5L * 1024 * 1024 * 1024;
+                else if (sizeSetting.Contains("10 GB")) maxBytes = 10L * 1024 * 1024 * 1024;
+
+                var remainingFiles = dirInfo.GetFiles("*.zip", SearchOption.TopDirectoryOnly);
+                System.Array.Sort(remainingFiles, (a, b) => a.CreationTime.CompareTo(b.CreationTime)); // Eskiden yeniye
+
+                long totalBytes = 0;
+                foreach (var f in remainingFiles) totalBytes += f.Length;
+
+                int i = 0;
+                while (totalBytes > maxBytes && i < remainingFiles.Length)
+                {
+                    try
+                    {
+                        totalBytes -= remainingFiles[i].Length;
+                        remainingFiles[i].Delete();
+                    }
+                    catch { }
+                    i++;
+                }
+            }
+            catch { }
         }
     }
 }
